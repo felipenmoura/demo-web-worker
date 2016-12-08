@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JavaScript Web Worker</title>
+</head>
+<body>
+  <a href="https://your-url" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+ 
+  <div class="container">
+    Click a button and see the difference.<br/>
+
+    <div class="buttons-container">
+      <input type="button" value="Run" />
+      <input type="button" value="Run in a Worker" />
+    </div>
+
+    <textarea name="ta" id="ta" cols="60" rows="10" placeholder="Try typing here while processing"></textarea>
+
+    <div class="animated-container">
+      <span>CSS Animation</span>
+      <div class="animated"></div>
+    </div>
+    <div class="gif-container">
+      Animated<br/>
+      Gif
+      <div class="gif"></div>
+    </div>
+
+    <ol id="ol">
+    </ol>
+  </div>
+  
+  <style>
+    html, body {
+      height: 100%;
+      font-family: sans-serif, arial, tahoma;
+      margin: 0;
+      padding: 0;
+      padding-top: 5px;
+    }
+    
+    body {
+      background: #8f9ba3;
+      background: -moz-linear-gradient(45deg, #8f9ba3 0%, #afc6d6 99%);
+      background: -webkit-linear-gradient(45deg, #8f9ba3 0%,#afc6d6 99%);
+      background: linear-gradient(45deg, #8f9ba3 0%,#afc6d6 99%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8f9ba3', endColorstr='#afc6d6',GradientType=1 );
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    .container {
+      position: relative;
+      margin: auto;
+      width: 405px;
+      height: 100%;
+      text-align: center;
+    }
+    
+    textarea {
+      width: 405px;
+    }
+    
+    .buttons-container {
+      width: 100%;
+      text-align: center;
+    }
+    
+    input {
+      background: #2476d6;
+      color: #fff;
+      text-align: center;
+      width: 140px;
+      border: solid 1px #184e8d;
+      height: 40px;
+      margin: 20px 0;
+      font-size: 1rem;
+    }
+    
+    .animated-container, .gif-container {
+      position: absolute;
+      background-color: #fff;
+      bottom: 5px;
+      left: 0;
+      width: 200px;
+      height: 60px;
+      z-index: 0;
+      overflow: hidden;
+      border: solid 1px #000;
+      text-align: center;
+      color: #fff;
+      font-size: 1.8rem;
+      padding-top: 13px;
+    }
+    
+    .animated-container span {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .gif-container {
+      left: 205px;
+      color: #000;
+      background-image: url(bb8-star-wars.gif);
+      background-repeat: no-repeat;
+      background-position: right bottom;
+      background-size: 70% 100%;
+      background-color: #E6D7B3;
+      font-size: 1.5rem;
+      padding: 3px 5px;
+      text-align: left;
+    }
+    
+    .animated {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40px;
+      height: 100%;
+      background: #f00;
+      z-index: 1;
+      border-left: solid 20px #f77;
+      box-shadow: -10px 0 0 0 #fbb, 10px 0 0 0 #fbb;
+      animation: slide 2s infinite linear;
+    }
+    
+    @keyframes slide {
+      from {
+        left: -60px;
+      }
+
+      to {
+        left: 110%;
+      }
+    }
+
+    ol {
+      text-align: left;
+      border: dotted 3px #d0d0d0;
+      border-top: none;
+      padding-left: 25px;
+      margin-left: 2px;
+      line-height: 24px;
+      color: #fff;
+      background: rgba(240,255,255,.5);
+      margin: 0;
+      margin-top: -2px;
+    }
+    
+  </style>
+  
+  <script>
+    var ta = document.getElementById('ta');
+    var list = document.getElementById('ol');
+    
+    var ipts = document.querySelectorAll('input');
+    
+    function startTest (event) {
+      ta.focus();
+      
+      let el = document.createElement('li');
+      el.innerHTML = 'Processing...';
+      el.classList.add('processing');
+      list.appendChild(el);
+      
+      return {
+        end: evt=>{
+          console.log('END: ', evt.data || evt || evt.message);
+          el.innerHTML = 'DONE';
+          el.classList.remove('processing');
+        }
+      }
+    }
+    
+    ipts[0].addEventListener('click', event=>{
+      let t = startTest(event);
+      setTimeout(function() {
+        t.end(expensiveFunction(Math.ceil(Math.random() * 99)));
+      }, 10);
+    });
+    
+    ipts[1].addEventListener('click', event=>{
+      let t = startTest(event);
+      WWExpensiveFunction()
+        .then(result=>{
+          t.end(result);
+        })
+        .catch(err=>{
+          console.warn(err);
+          t.end(err);
+        });
+    });
+    
+    function expensiveFunction (len) {
+      var i= 0,
+          l= 1000000000 + len,
+          r= 0;
+      console.log('starting');
+      for (; i<=l; i++) {
+        r = r + l - i; // some random calculation here :p
+      }
+      console.log('ending', r);
+      return r;
+    }
+    
+    function WWExpensiveFunction () {
+      
+      return new Promise((resolve, reject)=>{
+        var worker = new Worker('ww-calc.js');
+
+        worker.onmessage = function(event) {
+          console.log(event.data.result);
+          resolve(event.data);
+        };
+        
+        worker.onerror = function(e) {
+          console.error('Error: Line ' + e.lineno + ' in ' + e.filename + ': ' + e.message);
+          reject();
+        };
+
+        //start the worker
+        worker.postMessage({ command: 'calculate' });
+      })
+
+    }
+    
+  </script>
+  
+</body>
+</html>
