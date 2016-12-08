@@ -19,4 +19,3 @@ Describe here what should happen, if it is a bug report.
 
 Operational System:
 Browser: 
-Node version:
