@@ -87,6 +87,13 @@
       font-size: 1rem;
     }
     
+    .not-supported {
+      background-color: #ca9393;
+      border-color: #909090;
+      color: #e0e0e0;
+      font-size: .9rem;
+    }
+    
     .animated-container, .gif-container {
       position: absolute;
       background-color: #fff;
@@ -224,7 +231,7 @@
         };
         
         worker.onerror = function(e) {
-          console.error('Error: Line ' + e.lineno + ' in ' + e.filename + ': ' + e.message);
+          console.error(`Error: Line ${e.lineno} in ${e.filename}: ${e.message}`);
           reject();
         };
 
@@ -233,6 +240,76 @@
       })
 
     }
+    
+    if (!window.Worker) {
+      ipts[1].setAttribute('disabled', 'disabled');
+      ipts[1].value = "NOT SUPPORTED";
+      ipts[1].classList.add('not-supported');
+    }
+    
+  </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script>
+// If you want to try this dynamic/embeded worker format, try the workerFromFunction function
+function workerFromFunction (script) {
+  // usamos o conteúdo da função
+  // caso seja uma tag de script, usamos o .textContent,
+  // caso seja uma função usamos o .toString
+  let fn= script.textContent
+          ? `function(){ ${script.textContent} }`
+          : script.toString();
+
+  // e na verdade, colocamos um wrapper ao redor dele
+  // este wraper fará com que este script escute mensagens e responda
+  // com o resultado
+  fn= `
+  self.onmessage = function(event) {
+    if (event.data.exec) {
+      let fn = ${fn};
+      self.postMessage(
+        fn.apply(self, event.data.clientData || [])
+      )
+    }
+  };
+`;
+
+  let blob = new Blob([fn], {type: 'application/javascript'});
+
+  let clientWorker = new Worker(window.URL.createObjectURL(blob));
+  return function () {
+    let args = [].slice.call(arguments);
+    return new Promise((resolve, reject)=>{
+      clientWorker.onmessage = function (result) {
+        resolve(result);
+      };
+      
+      clientWorker.postMessage({ exec: true, clientData: args });
+    });
+  };
+}
+
+let w = workerFromFunction(function(data){
+  let c;
+  for (let i = 0; i<100000000; i++) {
+    c = i*2;
+  }
+  console.log('FINISHED', data);
+  return data + ' - ' + c;
+});
+
+
+
+// w(123).then(function(r){ console.info(r.data); }).catch(function(r){ console.error(r); });
+    
+    
     
   </script>
   
