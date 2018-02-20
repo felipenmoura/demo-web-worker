@@ -4,9 +4,9 @@ Use this tool to see the difference you can make when processing some heavy stuf
 
 See it working here:
 
-[Web Worker testing tool](http://felipenmoura.com/demo-web-worker/);
+[Web Worker testing tool](http://felipenmoura.com/demo-web-worker/)
 
-[![Web Worker animated gif example](https://github.com/felipenmoura/demo-web-worker/blob/master/web-worker-animated-gif-example.gif)]([Web Worker testing tool](http://felipenmoura.com/demo-web-worker/))
+[![Web Worker animated gif example](https://github.com/felipenmoura/demo-web-worker/blob/master/web-worker-animated-gif-example.gif)](http://felipenmoura.com/demo-web-worker/)
 
 Any question or suggestion, just ping me in my twitter [@felipenmoura](https://twitter.com/felipenmoura) or open an issue [here](https://github.com/felipenmoura/demo-web-worker/issues).  
 
